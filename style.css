@@ -1185,72 +1185,35 @@ height:55px;
         margin-bottom:20px;
     }
 
-    .social-icons{
-        display:flex;
-        justify-content:center;
-        gap:15px;
-    }
-
-    .social-icons a{
-        width:55px;
-        height:55px;
-        font-size:25px;
-    }
-    .social-icons{
+   .social-icons{
     display:flex;
-    gap:15px;
-    align-items:center;
+    gap:20px;
+    margin-top:15px;
 }
 
-.social-icons .whatsapp{
-    display:inline-flex;
-    justify-content:center;
-    align-items:center;
-    width:50px;
-    height:50px;
-    margin-top:0;
-    padding:0;
-    border-radius:50%;
-    background:#25D366;
-    color:#fff;
-    font-size:24px;
+.social-icons a{
+    font-size:32px;
     text-decoration:none;
-    transition:.3s ease;
-    box-shadow:0 8px 20px rgba(37,211,102,.35);
+    transition:.3s;
 }
 
-.social-icons .whatsapp:hover{
-    transform:translateY(-5px) scale(1.08);
-    background:#1ebe5d;
+.social-icons a:hover{
+    transform:scale(1.15);
 }
 
-.social-icons .whatsapp i{
-    font-size:24px;
-}
-
-
-    .social-icons a {
-    font-size: 32px;
-    margin: 0 12px;
-    text-decoration: none;
-}
-
-
-    
-
-.social-icons .fa-instagram {
-    background: linear-gradient(45deg,
+.social-icons .fa-instagram{
+    background:linear-gradient(45deg,
         #f09433,
         #e6683c,
         #dc2743,
         #cc2366,
         #bc1888);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
-.social-icons .fa-whatsapp {
-    color: #25D366;
+.social-icons .fa-whatsapp{
+    color:#25D366;
 }
     /* ORDER NOW */
 
