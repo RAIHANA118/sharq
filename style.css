@@ -885,6 +885,25 @@ color:#222;
     font-size: 24px;
 }
 
+
+.social-icons a {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    font-size: 36px;
+    color: #E1306C;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.3);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    background: #E1306C;
+    color: white;
+    transform: scale(1.15) rotate(8deg);
+}
 /*=========================
 FOOTER
 =========================*/
