@@ -1204,35 +1204,31 @@ height:55px;
         margin-bottom:20px;
     }
 
-   .social-icons{
-    display:flex;
-    gap:20px;
-    margin-top:15px;
+  .social-icons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 25px 0;
 }
 
-.social-icons a{
-    font-size:32px;
-    text-decoration:none;
-    transition:.3s;
+.social-icons a {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    color: white;
+    font-size: 38px;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: 0.3s ease;
 }
 
-.social-icons a:hover{
-    transform:scale(1.15);
-}
-
-.social-icons .fa-instagram{
-    background:linear-gradient(45deg,
-        #f09433,
-        #e6683c,
-        #dc2743,
-        #cc2366,
-        #bc1888);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-
-.social-icons .fa-whatsapp{
-    color:#25D366;
+.social-icons a:hover {
+    transform: scale(1.15);
 }
     /* ORDER NOW */
 
