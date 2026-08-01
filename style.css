@@ -70,19 +70,12 @@ NAVBAR
     right: -35px;
 }
 
-header{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-z-index:999;
-
-backdrop-filter:blur(15px);
-background:rgba(109,0,25,.20);
-
-border-bottom:1px solid rgba(255,255,255,.15);
-
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 .navbar{
@@ -200,6 +193,8 @@ HERO
 .hero{
 
 height:280vh;
+    margin-top: 80px;   
+    padding-top: 20px;
 
 background:url("front1.jpeg") center center/cover no-repeat;
 
@@ -950,10 +945,15 @@ transform:translateY(0);
 RESPONSIVE
 =========================*/
 
-@media (max-width:991px){
+@media (max-width:768px){
+    .hero h1{
+        font-size: 2rem;
+        margin-top: 0;
+    }
 
-.menu-btn{
-    display:block;
+    .hero{
+        padding-top: 20px;
+    }
 }
 
 .nav-menu{
