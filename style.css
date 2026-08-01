@@ -42,7 +42,9 @@ NAVBAR
 =========================*/
 
 
-
+nav-links {
+    display: flex;
+}
 
 
 
