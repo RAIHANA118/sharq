@@ -1228,6 +1228,30 @@ height:55px;
     font-size:24px;
 }
 
+
+    .social-icons a {
+    font-size: 32px;
+    margin: 0 12px;
+    text-decoration: none;
+}
+
+
+    
+
+.social-icons .fa-instagram {
+    background: linear-gradient(45deg,
+        #f09433,
+        #e6683c,
+        #dc2743,
+        #cc2366,
+        #bc1888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.social-icons .fa-whatsapp {
+    color: #25D366;
+}
     /* ORDER NOW */
 
     .order-sidebar{
