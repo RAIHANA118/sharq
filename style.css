@@ -688,6 +688,18 @@ gap:60px;
 
 }
 
+
+.follow-icons a {
+  color: #800020; /* Maroon */
+  font-size: 30px;
+  margin: 0 12px;
+  text-decoration: none;
+}
+
+.follow-icons a:hover {
+  color: #b8860b;
+}
+
 .contact-info h3{
 
 font-size:40px;
