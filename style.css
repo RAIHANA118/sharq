@@ -1059,11 +1059,14 @@ height:55px;
 
 
 
-@media(max-width:500px){
+@media@media (max-width:768px){
 
     .hero-content h1{
         font-size:34px;
     }
+    header{
+    padding:12px 15px;
+}
 
     .hero-content p{
         font-size:16px;
@@ -1095,6 +1098,8 @@ height:55px;
     .logo img{
         height:45px;
         margin-right:8px;
+            width:42px;
+
     }
 
     /* NAVBAR */
@@ -1106,9 +1111,8 @@ height:55px;
     /* HERO */
 
     .hero{
-        height:100vh;
-        min-height:650px;
-        background-position:center;
+        min-height:70vh;
+    background-position:center;
     }
 
     /* ABOUT */
