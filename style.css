@@ -497,9 +497,9 @@ section{
 
     display:grid;
 
-    grid-template-columns:repeat(auto-fit,minmax(350px,2fr));
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 
-    gap:30px;
+    gap:20px;
 
 }
 
@@ -507,7 +507,7 @@ section{
 
 .gallery-grid img{
 
-    width:110%;
+    width:90%;
 
     height:550px;
 
