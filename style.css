@@ -497,7 +497,7 @@ section{
 
     display:grid;
 
-    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(350px,2fr));
 
     gap:30px;
 
@@ -507,7 +507,7 @@ section{
 
 .gallery-grid img{
 
-    width:100%;
+    width:110%;
 
     height:550px;
 
