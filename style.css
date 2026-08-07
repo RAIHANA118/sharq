@@ -4,831 +4,1044 @@
    Theme: White & Maroon
 ========================================== */
 
-
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
-
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    scroll-behavior:smooth;
 }
 
+html{
+    scroll-behavior:smooth;
+    overflow-x:hidden;
+}
 
 body{
     font-family:'Poppins',sans-serif;
     color:#333;
     background:#fff;
+    width:100%;
     overflow-x:hidden;
 }
 
+/* Grid and flex children default to min-width:auto, which lets long words
+   or wide media push a track past the viewport. This is what actually
+   causes sideways scroll on phones. */
+.cards > *,
+.features > *,
+.review-box > *,
+.gallery-grid > *,
+.contact-wrapper > *,
+.about-boxes > *,
+.container > *{
+    min-width:0;
+}
+
+iframe,
+video{
+    max-width:100%;
+}
+
+body.loading{
+    overflow:hidden;
+}
 
 :root{
-
     --maroon:#6d0019;
+    --maroon-light:#8a0022;
     --gold:#d4af37;
     --light:#f8f8f8;
     --shadow:0 15px 40px rgba(0,0,0,.12);
-
+    --shadow-hover:0 22px 50px rgba(0,0,0,.18);
+    --header-h:96px;
+    --ease:cubic-bezier(.22,.9,.32,1);
 }
 
+img{
+    max-width:100%;
+    display:block;
+}
+
+section[id]{
+    scroll-margin-top:var(--header-h);
+}
+
+/* ================= ACCESSIBILITY ================= */
+
+a:focus-visible,
+button:focus-visible,
+.menu-btn:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+    border-radius:4px;
+}
+
+@media (prefers-reduced-motion: reduce){
+    *,
+    *::before,
+    *::after{
+        animation-duration:.001ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.001ms !important;
+    }
+    html{
+        scroll-behavior:auto;
+    }
+}
+
+/* ================= PRELOADER ================= */
+
+.preloader{
+    position:fixed;
+    inset:0;
+    z-index:100000;
+    background:var(--maroon);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:opacity .6s ease, visibility .6s ease;
+}
+
+.preloader.hide{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.preloader-inner{
+    position:relative;
+    width:110px;
+    height:110px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.preloader-logo{
+    width:56px;
+    height:56px;
+    object-fit:contain;
+    animation:pulseLogo 1.6s ease-in-out infinite;
+}
+
+.preloader-ring{
+    position:absolute;
+    inset:0;
+    border:3px solid rgba(212,175,55,.25);
+    border-top-color:var(--gold);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{ transform:rotate(360deg); }
+}
+
+@keyframes pulseLogo{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.1); }
+}
 
 /* ================= HEADER ================= */
 
-
+/* Solid maroon from the first view. Any transparency here let the pale
+   hero photo bleed through and washed the red out to pink. */
 header{
-
     position:fixed;
     top:0;
     left:0;
     width:100%;
+    height:var(--header-h);
     z-index:9999;
     background:var(--maroon);
-
+    transition:box-shadow .35s ease, height .35s ease;
 }
 
+header.scrolled{
+    box-shadow:0 8px 25px rgba(0,0,0,.20);
+}
 
-
+/* .navbar is sized to fill the header exactly, so --header-h is the
+   single source of truth the hero offset and the mobile dropdown's
+   `top:100%` both line up against — no hardcoded pixel guesses. */
 .navbar{
-
+    position:relative;
+    z-index:1;
     max-width:1300px;
+    height:100%;
     margin:auto;
-    padding:15px 60px;
-
+    padding:0 clamp(20px,5vw,60px);
     display:flex;
     justify-content:space-between;
     align-items:center;
-
 }
-
-
-
 
 .logo{
-
     display:flex;
     align-items:center;
-
     font-family:'Cormorant Garamond',serif;
-    font-size:34px;
+    font-size:clamp(24px,3vw,34px);
     font-weight:700;
     color:white;
-
 }
-
-
 
 .logo img{
-
-    width:65px;
-    height:65px;
+    width:clamp(42px,5vw,65px);
+    height:clamp(42px,5vw,65px);
     object-fit:contain;
     margin-right:12px;
-
+    transition:transform .3s ease;
 }
 
-
+.logo:hover img{
+    transform:rotate(-8deg) scale(1.05);
+}
 
 .nav-menu{
-
     display:flex;
     list-style:none;
-    gap:35px;
-
+    gap:clamp(16px,3vw,35px);
 }
 
-
-
 .nav-menu a{
-
+    position:relative;
     text-decoration:none;
     color:white;
     font-size:16px;
-    transition:.3s;
-
+    padding-bottom:6px;
+    transition:color .3s ease;
 }
 
+.nav-menu a::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:0;
+    height:2px;
+    background:var(--gold);
+    transition:width .3s ease;
+}
 
-
-.nav-menu a:hover{
-
+.nav-menu a:hover,
+.nav-menu a.active{
     color:var(--gold);
-
 }
 
-
+.nav-menu a:hover::after,
+.nav-menu a.active::after{
+    width:100%;
+}
 
 .menu-btn{
-
     display:none;
     color:white;
     font-size:28px;
     cursor:pointer;
-
+    transition:transform .3s ease;
 }
 
-
+.menu-btn:active{
+    transform:scale(.9);
+}
 
 /* ORDER BUTTON */
 
-
 .order-sidebar{
-
     position:fixed;
     top:50%;
     right:-45px;
-
     transform:translateY(-50%) rotate(-90deg);
-
     background:var(--maroon);
     color:white;
-
     padding:12px 25px;
-
     border-radius:10px 10px 0 0;
-
     text-decoration:none;
-
-    z-index:10000;
-
+    letter-spacing:.5px;
+    z-index:9998;
+    box-shadow:0 6px 18px rgba(0,0,0,.25);
+    transition:background .3s ease, padding .3s ease;
 }
 
-
+.order-sidebar:hover{
+    background:var(--maroon-light);
+}
 
 /* ================= HERO ================= */
 
-
 .hero{
-
-    height:100vh;
-
-    margin-top:100px;
-
-    background:url("front1.jpeg") center/cover no-repeat;
-
+    margin-top:var(--header-h);
+    min-height:calc(120vh - var(--header-h));
+    min-height:calc(120svh - var(--header-h));
+    background:url("front1.jpg") center/cover no-repeat;
     display:flex;
     align-items:center;
     justify-content:center;
-
     text-align:center;
-
     position:relative;
-
+    padding:60px 6%;
 }
-
-
 
 .overlay{
-
     position:absolute;
     inset:0;
-
-    background:rgba(0,0,0,.45);
-
+    background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.35) 45%, rgba(0,0,0,.6));
 }
-
-
 
 .hero-content{
-
     position:relative;
     color:white;
-
+    max-width:760px;
+    margin:0 auto;
 }
 
-
-
-.hero-content h3{
-
-    color:var(--gold);
-    font-size:28px;
+.hero-eyebrow{
+    display:inline-block;
+    font-family:'Poppins',sans-serif;
+    font-size:clamp(12px,2vw,15px);
     letter-spacing:4px;
-
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:500;
 }
 
+.hero-divider{
+    display:block;
+    width:70px;
+    height:2px;
+    margin:18px auto 24px;
+    background:var(--gold);
+    position:relative;
+    transform-origin:center;
+}
 
+.hero-divider::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:8px;
+    height:8px;
+    background:var(--gold);
+    transform:translate(-50%,-50%) rotate(45deg);
+}
 
 .hero-content h1{
-
     font-family:'Cormorant Garamond',serif;
-
-    font-size:80px;
-
+    font-size:clamp(38px,7vw,80px);
+    line-height:1.08;
 }
-
-
 
 .hero-content p{
-
-    font-size:20px;
-    margin:20px 0 35px;
-
+    font-size:clamp(15px,2vw,20px);
+    margin:22px auto 35px;
+    max-width:560px;
+    line-height:1.7;
+    color:rgba(255,255,255,.9);
 }
 
+.hero-actions{
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
 
+.js .hero-eyebrow,
+.js .hero-divider,
+.js .hero-content h1,
+.js .hero-content p,
+.js .hero-actions{
+    opacity:0;
+    animation:fadeUp .9s var(--ease) forwards;
+}
+
+.js .hero-eyebrow{ animation-delay:.15s; }
+.js .hero-divider{ animation:growLine .9s var(--ease) forwards; animation-delay:.35s; }
+.js .hero-content h1{ animation-delay:.5s; }
+.js .hero-content p{ animation-delay:.7s; }
+.js .hero-actions{ animation-delay:.9s; }
+
+@keyframes fadeUp{
+    from{ opacity:0; transform:translateY(28px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes growLine{
+    from{ opacity:0; transform:scaleX(0); }
+    to{ opacity:1; transform:scaleX(1); }
+}
+
+.scroll-cue{
+    position:absolute;
+    bottom:28px;
+    left:50%;
+    transform:translateX(-50%);
+    color:white;
+    font-size:20px;
+    opacity:.8;
+    animation:bounce 2.2s ease-in-out infinite;
+    text-decoration:none;
+}
+
+@keyframes bounce{
+    0%,100%{ transform:translate(-50%,0); }
+    50%{ transform:translate(-50%,10px); }
+}
+
+/* ================= BUTTONS ================= */
 
 .btn{
-
+    display:inline-block;
     background:var(--maroon);
-
     color:white;
-
     padding:15px 40px;
-
     border-radius:40px;
-
     text-decoration:none;
-
+    font-weight:500;
+    letter-spacing:.3px;
+    border:2px solid var(--maroon);
+    transition:transform .3s ease, box-shadow .3s ease, background .3s ease, border-color .3s ease;
 }
 
+.btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 30px rgba(0,0,0,.35);
+    background:var(--maroon-light);
+    border-color:var(--maroon-light);
+    color:white;
+}
 
+.btn-outline{
+    background:transparent;
+    border-color:rgba(255,255,255,.7);
+}
 
+.btn-outline:hover{
+    background:rgba(255,255,255,.12);
+    border-color:var(--gold);
+    color:var(--gold);
+}
 
 /* ================= COMMON ================= */
 
-
 section{
-
     padding:100px 10%;
-
 }
-
-
 
 .title{
-
     text-align:center;
-
     font-family:'Cormorant Garamond',serif;
-
-    font-size:48px;
-
+    font-size:clamp(30px,4vw,48px);
     color:var(--maroon);
-
     margin-bottom:60px;
-
 }
 
+/* ================= REVEAL ANIMATION ================= */
 
+/* Each concrete element below owns a single `transition` declaration
+   that covers both its reveal-in and its hover animation — CSS only
+   honors one `transition` shorthand per element, so these are never
+   split across two competing selectors. */
 
+.js .reveal{
+    opacity:0;
+    transform:translateY(50px);
+}
 
+.js .reveal.visible{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.about-image,
+.about-text,
+.contact-info,
+.follow-us,
+.map-section{
+    transition:opacity .7s var(--ease), transform .7s var(--ease);
+}
 
 /* ================= ABOUT ================= */
 
-
 .container{
-
     display:flex;
     align-items:center;
     gap:60px;
-
 }
-
-
 
 .about-image,
 .about-text{
-
     flex:1;
-
 }
 
-
-
 .about-image img{
-
     width:100%;
     border-radius:20px;
     box-shadow:var(--shadow);
-
+    transition:opacity .6s ease;
 }
-
-
 
 .about-text h2{
-
     font-family:'Cormorant Garamond',serif;
-
     color:var(--maroon);
-
-    font-size:50px;
-
+    font-size:clamp(28px,4vw,50px);
 }
 
-
+.about-text p{
+    margin-top:18px;
+    line-height:1.8;
+    color:#555;
+}
 
 .about-boxes{
-
     margin-top:30px;
-
     display:grid;
-
     grid-template-columns:repeat(2,1fr);
-
     gap:20px;
-
 }
-
-
 
 .box{
-
     padding:25px;
-
     text-align:center;
-
     border-radius:15px;
-
     box-shadow:var(--shadow);
-
+    transition:transform .35s ease, box-shadow .35s ease;
 }
 
-
+.box:hover{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-hover);
+}
 
 .box h3{
-
     color:var(--maroon);
-
     font-size:35px;
-
 }
-
-
-
-
 
 /* ================= COLLECTION ================= */
 
-
 .collection{
-
     background:#fafafa;
-
 }
 
-
-
+/* min() keeps the track from forcing a width the viewport cannot give.
+   A bare minmax(280px,...) overflows any screen narrower than 280px plus
+   the section padding, which is what pushes phones sideways. */
 .cards{
-
     display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-
+    grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
     gap:35px;
-
 }
-
-
 
 .card{
-
     background:white;
-
     border-radius:20px;
-
     overflow:hidden;
-
     box-shadow:var(--shadow);
-
+    transition:transform .5s var(--ease), box-shadow .5s var(--ease), opacity .7s var(--ease);
 }
 
-
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:var(--shadow-hover);
+}
 
 .card img{
-
     width:100%;
-    height:330px;
-    object-fit:cover;
-
+    aspect-ratio:4/5;
+    height:auto;
+    object-fit:contain;
+    background:#fff;
+    transition:transform .5s ease, opacity .6s ease;
 }
 
-
+.card:hover img{
+    transform:scale(1.06);
+}
 
 .card h3{
-
-    padding:20px;
-
+    padding:20px 20px 0;
     font-family:'Cormorant Garamond',serif;
-
     color:var(--maroon);
-
-    font-size:32px;
-
+    font-size:clamp(24px,3vw,32px);
 }
-
-
 
 .card p{
-
-    padding:0 20px 20px;
-
+    padding:10px 20px 20px;
+    color:#555;
 }
-
-
 
 .card a{
-
     display:inline-block;
-
     margin:0 20px 25px;
-
     padding:12px 30px;
-
     background:var(--maroon);
-
     color:white;
-
     border-radius:30px;
-
     text-decoration:none;
-
+    transition:background .3s ease, transform .3s ease;
 }
 
-
-
-
+.card a:hover{
+    background:var(--maroon-light);
+    transform:translateY(-2px);
+}
 
 /* ================= FEATURES ================= */
 
+.why{
+    background:var(--light);
+}
 
 .features{
-
     display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-
+    grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));
     gap:30px;
-
 }
-
-
 
 .feature{
-
+    background:white;
     padding:40px;
-
     text-align:center;
-
     box-shadow:var(--shadow);
-
     border-radius:20px;
-
+    transition:transform .4s ease, box-shadow .4s ease, opacity .7s ease;
 }
 
-
+.feature:hover{
+    transform:translateY(-8px);
+    box-shadow:var(--shadow-hover);
+}
 
 .feature i{
-
-    font-size:55px;
-
+    font-size:50px;
     color:var(--maroon);
-
+    transition:transform .35s ease;
 }
 
+.feature:hover i{
+    transform:scale(1.12) rotate(-6deg);
+}
 
-
-
+.feature h3{
+    margin:18px 0 10px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:24px;
+    color:var(--maroon);
+}
 
 /* ================= GALLERY ================= */
 
-
 .gallery-grid{
-
     display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-
+    grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));
     gap:20px;
-
+    align-items:start;
 }
 
-
-
+/* These are marketing posters with text set close to the edges, so they
+   are fitted whole rather than cropped to a fixed height. The 3/4 box
+   matches their portrait ratio, leaving almost no letterboxing. */
 .gallery-grid img{
-
     width:100%;
-
-    height:600px;
-
-    object-fit:cover;
-
+    aspect-ratio:3/4;
+    height:auto;
+    object-fit:contain;
+    background:var(--light);
     border-radius:15px;
-
+    transition:transform .5s ease, filter .3s ease, opacity .6s ease;
 }
 
+.gallery-grid img:hover{
+    transform:scale(1.03);
+    filter:brightness(1.08);
+}
 
+/* Lazy-loaded images fade in once their file finishes downloading.
+   Only opacity is set here (no transition) so the more specific
+   per-context rules above stay in control of the transition list. */
+.js img[loading="lazy"]{
+    opacity:0;
+}
 
-
+.js img[loading="lazy"].loaded{
+    opacity:1;
+}
 
 /* ================= REVIEWS ================= */
 
+.reviews{
+    background:#fafafa;
+}
 
 .review-box{
-
     display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-
+    grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
     gap:30px;
-
 }
-
-
 
 .review{
-
+    background:white;
     padding:35px;
-
     text-align:center;
-
     box-shadow:var(--shadow);
-
     border-radius:20px;
-
+    transition:transform .4s ease, box-shadow .4s ease, opacity .7s ease;
 }
 
+.review:hover{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-hover);
+}
 
+.review i{
+    color:var(--gold);
+    font-size:22px;
+    margin-bottom:14px;
+    display:inline-block;
+}
 
+.review p{
+    line-height:1.7;
+    color:#555;
+}
 
+.review h4{
+    margin-top:18px;
+    color:var(--maroon);
+    font-weight:500;
+    font-size:15px;
+}
 
 /* ================= CONTACT ================= */
 
-
 .contact-wrapper{
-
     display:grid;
-
     grid-template-columns:1fr 1fr;
-
     gap:50px;
-
 }
 
-
-
-.contact-info h3{
-
+.contact-info h3,
+.follow-us h3{
     font-family:'Cormorant Garamond',serif;
-
-    font-size:40px;
-
+    font-size:clamp(26px,3vw,40px);
     color:var(--maroon);
-
 }
-
-
 
 .contact-info p{
-
     margin:20px 0;
-
+    color:#555;
 }
 
+.contact-info p i{
+    color:var(--maroon);
+    width:20px;
+    text-align:center;
+    margin-right:6px;
+}
 
+.contact-info a{
+    color:#555;
+    text-decoration:none;
+    transition:color .3s ease;
+}
+
+.contact-info a:hover{
+    color:var(--maroon);
+}
 
 .whatsapp-button{
-
     display:inline-flex;
-
     gap:10px;
-
     align-items:center;
-
     background:#25D366;
-
     color:white;
-
     padding:14px 25px;
-
     border-radius:40px;
-
     text-decoration:none;
-
+    margin-top:10px;
+    transition:transform .3s ease, box-shadow .3s ease;
 }
 
+.whatsapp-button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 25px rgba(37,211,102,.4);
+}
 
+.follow-us{
+    margin-top:10px;
+}
 
 .instagram{
-
     display:flex;
-
     width:70px;
-
     height:70px;
-
+    margin-top:20px;
     border-radius:50%;
-
     align-items:center;
-
     justify-content:center;
-
     background:#E1306C;
-
     color:white;
-
     font-size:35px;
-
+    text-decoration:none;
+    transition:transform .3s ease;
 }
 
+.instagram:hover{
+    transform:scale(1.1) rotate(8deg);
+}
 
+/* ================= MAP ================= */
 
+.map-section{
+    text-align:center;
+    background:#fafafa;
+}
+
+.map-section h2{
+    font-family:'Cormorant Garamond',serif;
+    color:var(--maroon);
+    font-size:clamp(26px,3.5vw,36px);
+    margin-bottom:30px;
+}
 
 .map-section iframe{
     width:100%;
+    max-width:1000px;
     height:450px;
     border-radius:12px;
-    box-shadow:0 5px 15px rgba(0,0,0,.2);
+    box-shadow:var(--shadow);
 }
-
-
-.map-section iframe{
-    width:100%;
-    height:350px;
-}
-
-
-
-
 
 /* ================= FOOTER ================= */
 
-
 footer{
-
     background:var(--maroon);
-
     color:white;
-
     text-align:center;
-
     padding:30px;
-
-}
-
-
-
-
-
-
-/* ================= MOBILE ================= */
-
-
-@media(max-width:768px){
-
-
-.navbar{
-
-    padding:15px 20px;
-
-}
-
-
-
-.logo span{
-
-    font-size:25px;
-
-}
-
-
-
-.logo img{
-
-    width:45px;
-    height:45px;
-
-}
-
-
-
-.menu-btn{
-
-    display:block;
-
-}
-
-
-
-.nav-menu{
-
-    position:absolute;
-
-    top:75px;
-
-    left:-100%;
-
-    width:100%;
-
-    background:var(--maroon);
-
-    flex-direction:column;
-
-    text-align:center;
-
-    padding:25px 0;
-
-    transition:.3s;
-
-}
-
-
-
-.nav-menu.active{
-
-    left:0;
-
-}
-
-
-
-.hero-content h1{
-
-    font-size:45px;
-
-}
-
-
-
-.hero-content h3{
-
-    font-size:18px;
-
-}
-
-
-
-.container{
-
-    flex-direction:column;
-
-}
-
-
-
-.about-text h2{
-
-    font-size:38px;
-
-}
-
-
-
-.about-boxes{
-
-    grid-template-columns:1fr;
-
-}
-
-
-
-.contact-wrapper{
-
-    grid-template-columns:1fr;
-
-}
-
-
-
-.title{
-
-    font-size:36px;
-
-}
-
-
-
-.gallery-grid img{
-
-    height:200px;
-
-}
-
-
-
-.order-sidebar{
-
     font-size:14px;
-
 }
 
-   .map-section iframe{
-    width:100%;
-    height:350px;
+/* ================= BACK TO TOP ================= */
+
+.back-to-top{
+    position:fixed;
+    right:22px;
+    bottom:22px;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:var(--maroon);
+    color:white;
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    cursor:pointer;
+    box-shadow:0 8px 22px rgba(0,0,0,.28);
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(15px);
+    transition:opacity .3s ease, transform .3s ease, visibility .3s ease, background .3s ease;
+    z-index:9997;
+}
+
+.back-to-top.show{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+}
+
+.back-to-top:hover{
+    background:var(--maroon-light);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1024px){
+
+    section{
+        padding:80px 6%;
+    }
+}
+
+/* Nav collapses before the menu can overflow on tablets */
+@media(max-width:960px){
+
+    .menu-btn{
+        display:block;
+    }
+
+    .nav-menu{
+        position:absolute;
+        top:100%;
+        left:-100%;
+        width:100%;
+        background:var(--maroon);
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        gap:0;
+        padding:10px 0 25px;
+        transition:left .35s ease;
+        box-shadow:0 15px 25px rgba(0,0,0,.2);
+    }
+
+    .nav-menu li{
+        width:100%;
+    }
+
+    .nav-menu a{
+        display:block;
+        padding:14px 0;
+    }
+
+    .nav-menu a::after{
+        display:none;
+    }
+
+    .nav-menu.active{
+        left:0;
+    }
 }
 
 @media(max-width:768px){
 
-.map-section{
-    width:95%;
+    :root{
+        --header-h:76px;
+    }
+
+    .navbar{
+        padding:0 20px;
+    }
+
+    .container{
+        flex-direction:column;
+    }
+
+    .about-boxes{
+        grid-template-columns:1fr;
+    }
+
+    .contact-wrapper{
+        grid-template-columns:1fr;
+        gap:35px;
+        text-align:center;
+    }
+
+    .contact-info p i{
+        margin-right:8px;
+    }
+
+    .follow-us{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .map-section iframe{
+        height:320px;
+    }
+
+    .order-sidebar{
+        font-size:13px;
+        padding:10px 18px;
+    }
+
+    /* Hero is sized so the headline and both CTAs land inside the first
+       screen — nothing important sits below the fold on load. */
+    .hero{
+        padding:30px 6% 70px;
+    }
+
+    .hero-content p{
+        margin:16px auto 26px;
+    }
+
+    .hero-actions{
+        flex-direction:column;
+        align-items:center;
+        width:100%;
+        gap:12px;
+    }
+
+    .hero-actions .btn{
+        width:100%;
+        max-width:300px;
+        padding:13px 30px;
+        text-align:center;
+    }
+
+    section{
+        padding:70px 7%;
+    }
 }
 
-.map-section iframe{
-    height:250px;
-}
+@media(max-width:480px){
 
-}
+    .logo img{
+        width:38px;
+        height:38px;
+    }
 
+    .logo span{
+        font-size:20px;
+    }
 
+    .hero{
+        padding:20px 5% 60px;
+    }
 
+    .hero-eyebrow{
+        letter-spacing:2.5px;
+    }
+
+    /* The rotated side tab and the scroll cue both compete with the CTAs
+       on a phone-sized hero, so the cue steps aside. */
+    .scroll-cue{
+        display:none;
+    }
+
+    .order-sidebar{
+        font-size:12px;
+        padding:9px 15px;
+        right:-38px;
+    }
+
+    .gallery-grid{
+        gap:14px;
+    }
+
+    .feature,
+    .review{
+        padding:28px 22px;
+    }
+
+    .box{
+        padding:20px;
+    }
+
+    .box h3{
+        font-size:28px;
+    }
+
+    .map-section iframe{
+        height:240px;
+    }
+
+    .back-to-top{
+        width:42px;
+        height:42px;
+        right:16px;
+        bottom:16px;
+        font-size:16px;
+    }
+
+    footer p{
+        font-size:13px;
+    }
 }
