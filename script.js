@@ -3,120 +3,174 @@
 // script.js
 // ============================================
 
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ============================================
+// Preloader
+// ============================================
+
+const preloader = document.getElementById("preloader");
+
+const hidePreloader = () => {
+
+    if (!preloader) return;
+
+    preloader.classList.add("hide");
+    document.body.classList.remove("loading");
+
+    preloader.addEventListener("transitionend", () => {
+        preloader.remove();
+    }, { once: true });
+
+};
+
+if (document.readyState === "complete") {
+    hidePreloader();
+} else {
+    window.addEventListener("load", hidePreloader);
+    // Safety net in case the load event is delayed by a slow embed (e.g. the map)
+    setTimeout(hidePreloader, 4000);
+}
+
+// ============================================
 // Mobile Menu Toggle
+// ============================================
+
 const menuBtn = document.querySelector(".menu-btn");
 const navMenu = document.querySelector(".nav-menu");
 
-menuBtn.addEventListener("click", () => {
+const toggleMenu = () => {
 
     navMenu.classList.toggle("active");
+    const isOpen = navMenu.classList.contains("active");
 
-    if (navMenu.classList.contains("active")) {
-        menuBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-    } else {
-        menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
-    }
+    menuBtn.innerHTML = isOpen
+        ? '<i class="fa-solid fa-xmark"></i>'
+        : '<i class="fa-solid fa-bars"></i>';
 
-});
+    menuBtn.setAttribute("aria-expanded", isOpen);
 
-// Close menu after clicking a link
-document.querySelectorAll(".nav-menu a").forEach(link => {
+};
 
-    link.addEventListener("click", () => {
+if (menuBtn && navMenu) {
 
-        navMenu.classList.remove("active");
-        menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    menuBtn.setAttribute("aria-expanded", "false");
 
+    menuBtn.addEventListener("click", toggleMenu);
+
+    menuBtn.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleMenu();
+        }
     });
 
-});
+    // Close menu after clicking a link
+    document.querySelectorAll(".nav-menu a").forEach(link => {
+        link.addEventListener("click", () => {
+            navMenu.classList.remove("active");
+            menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            menuBtn.setAttribute("aria-expanded", "false");
+        });
+    });
+
+}
 
 // ============================================
 // Sticky Navbar
 // ============================================
 
-window.addEventListener("scroll", () => {
+const header = document.querySelector("header");
 
-    const header = document.querySelector("header");
+const updateHeader = () => {
 
-    if (window.scrollY > 80) {
+    if (!header) return;
 
-        header.style.background = "rgba(109,0,25,.92)";
-        header.style.boxShadow = "0 8px 25px rgba(0,0,0,.20)";
-
-    } else {
-
-        header.style.background = "rgba(109,0,25,.20)";
-        header.style.boxShadow = "none";
-
-    }
-
-});
-
-// ============================================
-// Smooth Scroll
-// ============================================
-
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-
-    anchor.addEventListener("click", function (e) {
-
-        e.preventDefault();
-
-        const target = document.querySelector(this.getAttribute("href"));
-
-        if (target) {
-
-            target.scrollIntoView({
-
-                behavior: "smooth"
-
-            });
-
-        }
-
-    });
-
-});
-
-// ============================================
-// Scroll Reveal Animation
-// ============================================
-
-const revealElements = document.querySelectorAll(
-    ".card,.feature,.review,.gallery-grid img,.box,.about-image,.about-text,.contact-form,.contact-info"
-);
-
-const revealOnScroll = () => {
-
-    const trigger = window.innerHeight * 0.85;
-
-    revealElements.forEach(el => {
-
-        const top = el.getBoundingClientRect().top;
-
-        if (top < trigger) {
-
-            el.style.opacity = "1";
-            el.style.transform = "translateY(0px)";
-
-        }
-
-    });
+    header.classList.toggle("scrolled", window.scrollY > 80);
 
 };
 
-revealElements.forEach(el => {
+window.addEventListener("scroll", updateHeader, { passive: true });
+updateHeader();
 
-    el.style.opacity = "0";
-    el.style.transform = "translateY(60px)";
-    el.style.transition = "all .8s ease";
+// ============================================
+// Active Nav Link on Scroll
+// ============================================
 
-});
+const navLinks = document.querySelectorAll(".nav-menu a");
+const sections = [...navLinks]
+    .map(link => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
 
-window.addEventListener("scroll", revealOnScroll);
+if (sections.length && "IntersectionObserver" in window) {
 
-revealOnScroll();
+    const navObserver = new IntersectionObserver((entries) => {
+
+        entries.forEach(entry => {
+
+            if (!entry.isIntersecting) return;
+
+            navLinks.forEach(link => link.classList.remove("active"));
+
+            const activeLink = document.querySelector(`.nav-menu a[href="#${entry.target.id}"]`);
+            if (activeLink) activeLink.classList.add("active");
+
+        });
+
+    }, { rootMargin: "-45% 0px -50% 0px" });
+
+    sections.forEach(section => navObserver.observe(section));
+
+}
+
+// ============================================
+// Scroll Reveal Animation (staggered, IntersectionObserver)
+// ============================================
+
+const revealElements = document.querySelectorAll(".reveal");
+
+if (revealElements.length) {
+
+    // Stagger siblings within the same group for a cascading entrance
+    const groupCounts = new Map();
+
+    revealElements.forEach(el => {
+
+        const parent = el.parentElement;
+        const index = groupCounts.get(parent) || 0;
+        groupCounts.set(parent, index + 1);
+
+        if (!prefersReducedMotion) {
+            el.style.transitionDelay = `${Math.min(index * 100, 400)}ms`;
+        }
+
+    });
+
+    if ("IntersectionObserver" in window && !prefersReducedMotion) {
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
+
+            });
+
+        }, { threshold: 0.15 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+    } else {
+
+        // No IntersectionObserver support, or motion is reduced: just show everything
+        revealElements.forEach(el => el.classList.add("visible"));
+
+    }
+
+}
 
 // ============================================
 // Counter Animation
@@ -124,149 +178,116 @@ revealOnScroll();
 
 const counters = document.querySelectorAll(".box h3");
 
-let started = false;
+const animateCounters = () => {
 
-window.addEventListener("scroll", () => {
+    counters.forEach(counter => {
 
-    const about = document.querySelector(".about");
+        const original = counter.innerText;
+        const number = parseInt(original, 10);
 
-    if (!about) return;
+        if (isNaN(number)) return;
 
-    const position = about.getBoundingClientRect().top;
+        if (prefersReducedMotion) {
+            counter.innerText = original;
+            return;
+        }
 
-    if (position < window.innerHeight - 150 && !started) {
+        let count = 0;
+        const speed = number / 80;
 
-        started = true;
+        const update = () => {
 
-        counters.forEach(counter => {
+            count += speed;
 
-            const original = counter.innerText;
+            if (count < number) {
+                counter.innerText = Math.floor(count) + "+";
+                requestAnimationFrame(update);
+            } else if (original.includes("%")) {
+                counter.innerText = number + "%";
+            } else if (original.includes("+")) {
+                counter.innerText = number + "+";
+            } else {
+                counter.innerText = number;
+            }
 
-            const number = parseInt(original);
+        };
 
-            if (isNaN(number)) return;
+        update();
 
-            let count = 0;
+    });
 
-            const speed = number / 80;
+};
 
-            const update = () => {
+const aboutSection = document.querySelector(".about");
 
-                count += speed;
+if (aboutSection && counters.length) {
 
-                if (count < number) {
+    if ("IntersectionObserver" in window) {
 
-                    counter.innerText = Math.floor(count) + "+";
+        const counterObserver = new IntersectionObserver((entries, observer) => {
 
-                    requestAnimationFrame(update);
+            entries.forEach(entry => {
 
-                } else {
-
-                    if (original.includes("%")) {
-                        counter.innerText = number + "%";
-                    } else if (original.includes("+")) {
-                        counter.innerText = number + "+";
-                    } else {
-                        counter.innerText = number;
-                    }
-
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.disconnect();
                 }
 
-            };
+            });
 
-            update();
+        }, { threshold: 0.4 });
 
-        });
+        counterObserver.observe(aboutSection);
 
+    } else {
+
+        animateCounters();
+
+    }
+
+}
+
+// ============================================
+// Lazy Image Fade-in
+// ============================================
+
+document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+
+    const markLoaded = () => img.classList.add("loaded");
+
+    if (img.complete && img.naturalWidth > 0) {
+        markLoaded();
+    } else {
+        img.addEventListener("load", markLoaded, { once: true });
     }
 
 });
 
 // ============================================
-// Contact Form
+// Back to Top
 // ============================================
 
-const form = document.querySelector("form");
+const backToTop = document.getElementById("backToTop");
 
-if (form) {
+if (backToTop) {
 
-    form.addEventListener("submit", function (e) {
+    window.addEventListener("scroll", () => {
+        backToTop.classList.toggle("show", window.scrollY > 500);
+    }, { passive: true });
 
-        e.preventDefault();
-
-        alert("Thank you for contacting Arab Al Sharq.\n\nOur team will contact you shortly.");
-
-        form.reset();
-
+    backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
     });
 
 }
 
 // ============================================
-// Gallery Hover Effect
-// ============================================
-
-document.querySelectorAll(".gallery-grid img").forEach(img => {
-
-    img.addEventListener("mouseenter", () => {
-
-        img.style.filter = "brightness(110%)";
-
-    });
-
-    img.addEventListener("mouseleave", () => {
-
-        img.style.filter = "brightness(100%)";
-
-    });
-
-});
-
-// ============================================
-// Hero Button Animation
-// ============================================
-
-const heroBtn = document.querySelector(".btn");
-
-if (heroBtn) {
-
-    setInterval(() => {
-
-        heroBtn.animate(
-
-            [
-
-                { transform: "scale(1)" },
-
-                { transform: "scale(1.05)" },
-
-                { transform: "scale(1)" }
-
-            ],
-
-            {
-
-                duration: 2000,
-
-                iterations: 1
-
-            }
-
-        );
-
-    }, 3000);
-
-}
-
-// ============================================
-// Current Year in Footer (Optional)
+// Current Year in Footer
 // ============================================
 
 const footer = document.querySelector("footer p");
 
 if (footer) {
-
     footer.innerHTML =
-        `© ${new Date().getFullYear()} Arab Al Sharq | Luxury Perfumes UAE | All Rights Reserved`;
-
+        `&copy; ${new Date().getFullYear()} Arab Al Sharq | Luxury Perfumes UAE | All Rights Reserved`;
 }
