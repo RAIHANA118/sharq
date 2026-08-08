@@ -272,8 +272,8 @@ header.scrolled{
 
 .hero{
     margin-top:var(--header-h);
-    min-height:calc(120vh - var(--header-h));
-    min-height:calc(120svh - var(--header-h));
+    min-height:calc(100vh - var(--header-h));
+    min-height:calc(100svh - var(--header-h));
     background:url("front1.jpg") center/cover no-repeat;
     display:flex;
     align-items:center;
